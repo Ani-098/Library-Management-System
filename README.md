@@ -1,26 +1,96 @@
-# Plagiarism_Detection
+# Library Management System using SQL
 
-## Plagiarism Detection using Machine Learning
+## Project Overview
 
-### Introduction
-Plagiarism detection plays a vital role in educational and professional environments. By applying machine learning techniques, we can develop an effective tool to identify copied content. This project guides you through building a plagiarism detector, from dataset collection to developing a user-friendly Flask web application.
+**Project Title:** Library Management System  
+**Database:** `library_db`
 
-### Collecting the Dataset
-The first step in building our plagiarism detector is gathering a comprehensive dataset. The dataset should consist of text documents that contain both original and plagiarized content. You can find such datasets from online sources like Kaggle or create your own by manually collecting documents.
+This project demonstrates the implementation of a Library Management System using SQL. It includes creating and managing tables, performing CRUD operations, and executing advanced SQL queries. The goal is to showcase skills in database design, manipulation, and querying.
 
-Here, we use a hypothetical dataset containing pairs of text where each pair includes one original document and one plagiarized version. This dataset will help train our machine learning model to distinguish between original and copied content.
+---
 
-### Preprocessing the Data
-Before feeding the data into our machine learning model, we need to preprocess it. Preprocessing steps include:
+## Objectives
 
-- **Tokenization:** Splitting the text into individual words or tokens.  
-- **Lowercasing:** Converting all text to lowercase to ensure uniformity.  
-- **Removing Punctuation:** Eliminating punctuation marks to avoid treating them as words.  
-- **Stopwords Removal:** Removing common words like "and", "the", etc., that do not contribute to the meaning of the text.
+- **Set up the Library Management System Database:** Create and populate the database with tables for branches, employees, members, books, issued status, and return status.  
+- **CRUD Operations:** Perform Create, Read, Update, and Delete operations on the data.  
+- **CTAS (Create Table As Select):** Utilize CTAS to create new tables based on query results.  
+- **Advanced SQL Queries:** Develop complex queries to analyze and retrieve specific data.  
 
-### Building the Machine Learning Model
-We use the Term Frequency-Inverse Document Frequency (TF-IDF) vectorizer to transform the text data into numerical features. Then, we train a model using these features. For this example, we use a simple logistic regression model.
+---
 
-### Creating the Flask Web Application
-To make our plagiarism detector easily accessible, we create a Flask web application. This application provides a user interface where users can input two text documents and receive a plagiarism score.
+## Project Structure
+
+### 1. Database Setup
+
+**Database Creation:**
+```sql
+CREATE DATABASE library_db;
+Table Creation:
+Created tables for branches, employees, members, books, issued status, and return status. Each table includes relevant columns and relationships.
+-- Create table "Branch"
+DROP TABLE IF EXISTS branch;
+CREATE TABLE branch (
+    branch_id VARCHAR(10) PRIMARY KEY,
+    manager_id VARCHAR(10),
+    branch_address VARCHAR(30),
+    contact_no VARCHAR(15)
+);
+
+-- Create table "Employee"
+DROP TABLE IF EXISTS employees;
+CREATE TABLE employees (
+    emp_id VARCHAR(10) PRIMARY KEY,
+    emp_name VARCHAR(30),
+    position VARCHAR(30),
+    salary DECIMAL(10,2),
+    branch_id VARCHAR(10),
+    FOREIGN KEY (branch_id) REFERENCES branch(branch_id)
+);
+
+-- Create table "Members"
+DROP TABLE IF EXISTS members;
+CREATE TABLE members (
+    member_id VARCHAR(10) PRIMARY KEY,
+    member_name VARCHAR(30),
+    member_address VARCHAR(30),
+    reg_date DATE
+);
+
+-- Create table "Books"
+DROP TABLE IF EXISTS books;
+CREATE TABLE books (
+    isbn VARCHAR(50) PRIMARY KEY,
+    book_title VARCHAR(80),
+    category VARCHAR(30),
+    rental_price DECIMAL(10,2),
+    status VARCHAR(10),
+    author VARCHAR(30),
+    publisher VARCHAR(30)
+);
+
+-- Create table "IssueStatus"
+DROP TABLE IF EXISTS issued_status;
+CREATE TABLE issued_status (
+    issued_id VARCHAR(10) PRIMARY KEY,
+    issued_member_id VARCHAR(30),
+    issued_book_name VARCHAR(80),
+    issued_date DATE,
+    issued_book_isbn VARCHAR(50),
+    issued_emp_id VARCHAR(10),
+    FOREIGN KEY (issued_member_id) REFERENCES members(member_id),
+    FOREIGN KEY (issued_emp_id) REFERENCES employees(emp_id),
+    FOREIGN KEY (issued_book_isbn) REFERENCES books(isbn)
+);
+
+-- Create table "ReturnStatus"
+DROP TABLE IF EXISTS return_status;
+CREATE TABLE return_status (
+    return_id VARCHAR(10) PRIMARY KEY,
+    issued_id VARCHAR(30),
+    return_book_name VARCHAR(80),
+    return_date DATE,
+    return_book_isbn VARCHAR(50),
+    FOREIGN KEY (return_book_isbn) REFERENCES books(isbn)
+);
+
 
